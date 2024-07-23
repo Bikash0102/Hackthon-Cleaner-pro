@@ -8,12 +8,12 @@ const Layout = () => {
   return (
     <>
   
-     <div>
+     <div className='flex flex-col   items-stretch  '>
      <Navbar />
     <div>
       <Routing />
     </div >
-    <div className='h-100'>
+    <div className='h-100 align-bottom'>
     <Footer />
     </div>
   </div>

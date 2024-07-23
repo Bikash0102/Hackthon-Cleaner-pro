@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'; // Import NavLink instead of Link
 import { useAuthContext } from '../../context/AuthContext';
 import LogoutButton from '../Buttons/LogoutButton';
 
 const Navbar = () => {
-  const { authUser } = useAuthContext(); // Replace with your auth logic
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State to manage mobile menu open/close
+  const { authUser } = useAuthContext();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -16,80 +16,86 @@ const Navbar = () => {
       return (
         <>
           <li>
-            <Link
+            <NavLink
               to="/employee"
+              activeClassName="active-nav-link"
               className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
             >
               Employee Details
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to="/Assigned Task"
+              activeClassName="active-nav-link"
               className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
             >
               Assign Task
-            </Link>
+            </NavLink>
           </li>
           <li>
-            <Link
+            <NavLink
               to="/taskstatus"
+              activeClassName="active-nav-link"
               className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
             >
               Task Status
-            </Link>
+            </NavLink>
           </li>
         </>
       );
     }
 
-    // Default links for other roles
     return (
       <>
         <li>
-          <Link
+          <NavLink
             to="/tasks"
+            activeClassName="active-nav-link"
             className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             Tasks
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link
+          <NavLink
             to="/requirement"
+            activeClassName="active-nav-link"
             className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             Requirement
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link
+          <NavLink
             to="/rating"
+            activeClassName="active-nav-link"
             className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             Rating
-          </Link>
+          </NavLink>
         </li>
         <li>
-          <Link
+          <NavLink
             to="/upload"
+            activeClassName="active-nav-link"
             className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
           >
             Upload Status
-          </Link>
+          </NavLink>
         </li>
       </>
     );
   };
 
   return (
-    <nav className=" bg-indigo-500 border-gray-200 dark:bg-gray-900">
+    <nav className="bg-indigo-500 border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <NavLink to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             Cleaner Staff PRO
           </span>
-        </Link>
+        </NavLink>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {/* Desktop View */}
           <ul className="hidden md:flex items-center space-x-3">
@@ -97,7 +103,7 @@ const Navbar = () => {
             {authUser ? (
               <li className="flex items-center space-x-3 rtl:space-x-reverse">
                 <h2 className="text-gray-900 bg-white dark:text-white">{authUser.FirstName}</h2>
-                <Link to="/profile">
+                <NavLink to="/profile">
                   <img
                     className="w-8 h-8 rounded-full"
                     src={authUser.Gender === 'male'
@@ -106,17 +112,17 @@ const Navbar = () => {
                     }
                     alt="user photo"
                   />
-                </Link>
+                </NavLink>
                 <LogoutButton />
               </li>
             ) : (
               <li>
-                <Link
+                <NavLink
                   to="/login"
                   className="py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 >
                   Login
-                </Link>
+                </NavLink>
               </li>
             )}
           </ul>
@@ -159,7 +165,7 @@ const Navbar = () => {
               {authUser ? (
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
                   <h2 className="text-gray-900 dark:text-white">{authUser.FirstName}</h2>
-                  <Link to="/profile">
+                  <NavLink to="/profile">
                     <img
                       className="w-8 h-8 rounded-full"
                       src={authUser.Gender === 'male'
@@ -168,16 +174,16 @@ const Navbar = () => {
                       }
                       alt="user photo"
                     />
-                  </Link>
+                  </NavLink>
                   <LogoutButton />
                 </div>
               ) : (
-                <Link
+                <NavLink
                   to="/login"
                   className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
                 >
                   Login
-                </Link>
+                </NavLink>
               )}
             </li>
           </ul>

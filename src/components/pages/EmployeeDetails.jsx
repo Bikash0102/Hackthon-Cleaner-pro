@@ -1,23 +1,26 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const EmployeeDetails = () => {
-  const [tasks, setTasks] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch tasks from the API
+    // Fetch employees from the API
     axios.get('http://localhost:5000/employee_fetch')
       .then(response => {
-        console.log('Response data:', response.data); // Check the structure here
-        // Assuming the response data is an array or contains an array in a specific property
-        setTasks(response.data.requests);
+        console.log('Response data:', response.data);
+        if (response.data && Array.isArray(response.data.requests)) {
+          setEmployees(response.data.requests);
+        } else {
+          setError('Invalid data received from server.');
+        }
         setLoading(false);
       })
       .catch(error => {
-        console.error('Error fetching tasks:', error);
-        setError('Error fetching tasks.');
+        console.error('Error fetching employees:', error);
+        setError('Error fetching employees.');
         setLoading(false);
       });
   }, []);
@@ -31,34 +34,61 @@ const EmployeeDetails = () => {
   }
 
   return (
-    <div className="p-4 bg-blue-100 min-h-screen">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Employee</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.isArray(tasks) && tasks.length > 0 ? (
-          tasks.map(task => (
-            <div key={task.id} className="bg-white p-4 rounded-lg shadow-md flex items-start space-x-4">
-              <div className="h-12 w-12">
-                <img
-                  src="https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-                  alt="User Icon"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold mb-2">{task.Task_Name}</h3>
-                <p className="text-gray-700 mb-2"><strong>First Name:</strong> {task.FirstName}</p>
-                <p className="text-gray-700 mb-2"><strong>Last Name:</strong> {task.LastName}</p>
-                <p className="text-gray-700 mb-2"><strong>Phone Number:</strong> {task.PhoneNumber}</p>
-                <p className="text-gray-700 mb-2"><strong>Gender:</strong> {task.Gender}</p>
-                <p className="text-gray-700 mb-2"><strong>Age:</strong> {task.Age}</p>
-                <p className="text-gray-700 mb-2"><strong>Department:</strong> {task.Department}</p>
-                <p className="text-gray-700"><strong>Supervisor:</strong> {task.Supervisor}</p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No tasks available.</p>
-        )}
+    <section className="bg-gray-100 min-h-screen py-12">
+      <div className="text-center pb-12">
+        <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-gray-800">
+          Meet Our Team
+        </h1>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 sm:px-6 lg:px-8">
+        {employees.map(employee => (
+          <IDCard key={employee.id} employee={employee} />
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const IDCard = ({ employee }) => {
+  return (
+    <div className="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden border border-gray-300">
+      <div className="flex justify-center mt-4">
+        <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-500">
+          <img 
+            src={employee.gender === 'Male'
+              ? `https://avatar.iran.liara.run/public/boy?username=${employee.userName}`
+              : `https://avatar.iran.liara.run/public/girl?username=${employee.userName}`
+            } 
+            alt="Profile Picture" 
+            className="w-full h-full object-cover" 
+          />
+        </div>
+      </div>
+      <div className="text-center mt-4">
+        <h2 className="text-xl font-semibold text-gray-700">{employee.FirstName} {employee.LastName}</h2>
+        <p className="text-gray-500">{employee.jobTitle}</p>
+      </div>
+      <div className="p-4">
+        <div className="flex justify-between text-gray-700">
+          <span className="font-semibold">Phone Number:</span>
+          <span>{employee.PhoneNumber}</span>
+        </div>
+        <div className="flex justify-between text-gray-700 mt-2">
+          <span className="font-semibold">Gender:</span>
+          <span>{employee.Gender}</span>
+        </div>
+        <div className="flex justify-between text-gray-700 mt-2">
+          <span className="font-semibold">Age:</span>
+          <span>{employee.Age}</span>
+        </div>
+        <div className="flex justify-between text-gray-700 mt-2">
+          <span className="font-semibold">Department:</span>
+          <span>{employee.Department}</span>
+        </div>
+        <div className="flex justify-between text-gray-700 mt-2">
+          <span className="font-semibold">Supervisor:</span>
+          <span>{employee.Supervisor}</span>
+        </div>
       </div>
     </div>
   );
