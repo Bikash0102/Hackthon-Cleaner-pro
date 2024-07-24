@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuthContext } from '../../context/AuthContext';
 
 const EmployeeDetails = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { authUser } = useAuthContext(); // Assuming you have a custom hook for auth
 
   useEffect(() => {
     // Fetch employees from the API
-    axios.get('http://localhost:5000/employee_fetch')
+    axios.post('http://localhost:5000/employee_fetch', { authUserId: authUser.id })
       .then(response => {
         console.log('Response data:', response.data);
         if (response.data && Array.isArray(response.data.requests)) {
@@ -23,7 +25,7 @@ const EmployeeDetails = () => {
         setError('Error fetching employees.');
         setLoading(false);
       });
-  }, []);
+  }, [authUser.id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -40,22 +42,22 @@ const EmployeeDetails = () => {
           Meet Our Team
         </h1>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-4 sm:px-6 lg:px-8">
         {employees.map(employee => (
-          <IDCard key={employee.id} employee={employee} />
+          <IDCard key={employee.id} employee={employee} authUser={authUser} />
         ))}
       </div>
     </section>
   );
 };
 
-const IDCard = ({ employee }) => {
+const IDCard = ({ employee, authUser }) => {
   return (
     <div className="max-w-sm mx-auto bg-white shadow-md rounded-lg overflow-hidden border border-gray-300">
       <div className="flex justify-center mt-4">
         <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-500">
           <img 
-            src={employee.gender === 'Male'
+            src={employee.Gender === 'Male'
               ? `https://avatar.iran.liara.run/public/boy?username=${employee.userName}`
               : `https://avatar.iran.liara.run/public/girl?username=${employee.userName}`
             } 
@@ -88,6 +90,10 @@ const IDCard = ({ employee }) => {
         <div className="flex justify-between text-gray-700 mt-2">
           <span className="font-semibold">Supervisor:</span>
           <span>{employee.Supervisor}</span>
+        </div>
+        <div className="flex justify-between text-gray-700 mt-2">
+          <span className="font-semibold">Logged In User:</span>
+          <span>{authUser ? authUser.name : 'Guest'}</span>
         </div>
       </div>
     </div>

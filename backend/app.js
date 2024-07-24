@@ -116,9 +116,37 @@ app.post("/TaskSubmission", (req, res) => {
       res.status(200).json(results);
     });
   });
+
+  app.post('/tasks/approve', (req, res) => {
+    const { taskId } = req.body;
+    console.log('Task ID:', taskId); // Log the taskId to verify its value
   
+    const query = 'UPDATE Tasks SET Task_Status = ? WHERE Task_Id = ? AND Task_Status = ?';
+    connection.query(query, ['Approved', taskId, 'Waiting for approval'], (error, results) => {
+      if (error) {
+        console.error('Error executing query:', error);
+        return res.status(500).send('Error approving task');
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).send('Task not found or already approved');
+      }
+      res.status(200).send('Task status updated to Approved');
+    });
+  });
+  app.post('/employee_username_fetch',  (req, res) => {
+    const { authUserId } = req.body;
+    console.log(authUserId);
+    connection.query('SELECT UserName FROM Employee WHERE Supervisor = ?', [authUserId], (error, results) => {
+    if (error) {
+    console.error('Error executing query:', error);
+    return res.status(500).json({ message: 'Failed to get Employees under the supervisor!' });
+    }
+    res.status(200).json({ message: 'Employees fetched successfully', requests: results }); 
+    console.log(results);// 200 OK status code
+    });
+    })
   app.post("/request",(req,res)=>{
-    console.log("klsgnjkd");
+  
     const {Req_name,Req_Description,Req_From, Req_To}=req.body;
     connection.query('INSERT INTO Request ( Req_name, Req_Description, Req_From, Req_To) VALUES (?, ?, ?, ?)',
     [Req_name,Req_Description,Req_From, Req_To], (error, results) => {
@@ -148,21 +176,7 @@ res.clearCookie('authToken'); // Clear the authentication token cookie
 res.status(200).json({ message: 'Logout successful' });
 });
 
-app.post('/Task_status', (req, res) => {
-    const { Task_Id } = req.body;
-     console.log(Task_Id);
-    // Check if user already exists
-    connection.query('Update Tasks set Task_Status = "Waiting for approval" where Task_Id  = ? and Task_Status = "Pending"', [Task_Id], async (error, results) => 
-        {
-        if (error) {
-            console.error('Error executing query:', error);
-            return res.status(500).json({ message: 'Failed to register user' });
-        }
-        return res.status(200).json({ message: 'successfully changed task state! ' });
 
-
-    });
-});
 app.post('/rating_insert', (req, res) => {
     
     const { rating,Review } = req.body;
@@ -177,61 +191,63 @@ app.post('/rating_insert', (req, res) => {
 });
 })
 
-app.get('/employee_fetch',  (req, res) => {
+// app.get('/employee_fetch',  (req, res) => {
  
-    connection.query('SELECT * FROM Employee where Role="Employee"',  (error, results) => {
-        if (error) {
-            console.error('Error executing query:', error);
-            return res.status(500).json({ message: 'Failed to get Employees under the supervisor!' });
-        }
-       return  res.status(200).json({ message: 'Employees fetched successfully', requests: results }); // 200 OK status code
-    });
+//     connection.query('SELECT * FROM Employee where Role="Employee"',  (error, results) => {
+//         if (error) {
+//             console.error('Error executing query:', error);
+//             return res.status(500).json({ message: 'Failed to get Employees under the supervisor!' });
+//         }
+//        return  res.status(200).json({ message: 'Employees fetched successfully', requests: results }); // 200 OK status code
+//     });
+// });
+
+app.post('/employee_fetch', (req, res) => {
+  const { authUserId } = req.body;
+  
+
+  connection.query('SELECT * FROM Employee WHERE Supervisor = ?', [authUserId], (error, results) => {
+    if (error) {
+      console.error('Error executing query:', error);
+      return res.status(500).json({ message: 'Failed to get Employees under the supervisor!' });
+    }
+    res.status(200).json({ message: 'Employees fetched successfully', requests: results });
+  });
 });
 
-app.post('/tasks/:taskId/approve', async (req, res) => {
-  const { taskId } = req.params;
-  
-  try {
-  // Update task status in the database
-  const query = 'UPDATE Tasks SET Task_Status = ? WHERE Task_Id = ? AND Task_Status = ?';
-  connection.query(query, ['Approved', taskId, 'Waiting For approval'], (error, results) => {
-  if (error) {
-  console.error('Error executing query:', error);
-  return res.status(500).send('Error approving task');
-  }
-  
-  // Check if any rows were affected
-  if (results.affectedRows === 0) {
-  return res.status(404).send('Task not found or already approved');
-  }
-  
-  res.status(200).send('Task status updated to Approved');
-  });
-  } catch (error) {
-  console.error('Error approving task:', error);
-  res.status(500).send('Error approving task');
-  }
-  });
-app.post('/Approve_Task', (req, res) => {
+app.post('/Task_status', (req, res) => {
   const { Task_Id } = req.body;
 
-  pool.query(
-    'UPDATE Tasks SET Task_Status = "Approved" WHERE Task_Id = ? AND Task_Status = "Waiting for approval"',
-    [Task_Id],
-    (error, results) => {
+  // Check if user already exists
+  connection.query('Update Tasks set Task_Status = "Waiting for approval" where Task_Id  = ? and Task_Status = "Pending"', [Task_Id], async (error, results) => 
+      {
       if (error) {
-        console.error('Error approving task:', error);
-        return res.status(500).json({ message: 'Failed to approve task' });
+          console.error('Error executing query:', error);
+          return res.status(500).json({ message: 'Failed to register user' });
       }
+      return res.status(200).json({ message: 'successfully changed task state! ' });
 
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ message: 'Task not found or already approved' });
-      }
 
-      res.status(200).json({ message: 'Task approved successfully!' });
-    }
-  );
+  });
 });
+
+
+app.post('/Task_complete', (req, res) => {
+  const { Task_Id } = req.body;
+
+  // Check if user already exists
+  connection.query('Update Tasks set Task_Status = "Approved" where Task_Id  = ? and Task_Status = "Waiting for approval"', [Task_Id], async (error, results) => 
+      {
+      if (error) {
+          console.error('Error executing query:', error);
+          return res.status(500).json({ message: 'Failed to register user' });
+      }
+      return res.status(200).json({ message: 'successfully changed task state! ' });
+
+
+  });
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

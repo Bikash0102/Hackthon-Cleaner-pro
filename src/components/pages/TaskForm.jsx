@@ -1,16 +1,45 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import { useAuthContext } from '../../context/AuthContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 const TaskForm = ({ onSubmit }) => {
+  const { authUser } = useAuthContext();
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
-  const [assignedBy, setAssignedBy] = useState('');
+  const [assignedBy, setAssignedBy] = useState(authUser.FirstName); // Initialize with authUser.FirstName
   const [assignedTo, setAssignedTo] = useState('');
   const [startDate, setStartDate] = useState('');
   const [dueHours, setDueHours] = useState('');
   const [taskStatus, setTaskStatus] = useState('Pending');
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/employee_username_fetch', { authUserId: authUser.id });
+        const formattedUsers = response.data.requests.map((user, index) => ({
+          id: index + 1,
+          name: user.UserName,
+        }));
+        setUsers(formattedUsers);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        toast.error('Error fetching users. Please try again.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    };
+
+    fetchUsers();
+  }, [authUser.id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +83,6 @@ const TaskForm = ({ onSubmit }) => {
   const resetForm = () => {
     setTaskName('');
     setTaskDescription('');
-    setAssignedBy('');
     setAssignedTo('');
     setStartDate('');
     setDueHours('');
@@ -89,19 +117,24 @@ const TaskForm = ({ onSubmit }) => {
                 onChange={(e) => setAssignedBy(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
+                readOnly // Make this field read-only
               />
             </div>
 
             <div>
               <label htmlFor="assignedTo" className="block text-gray-700 font-semibold mb-1">Assigned To</label>
-              <input
-                type="text"
+              <select
                 id="assignedTo"
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
-              />
+              >
+                <option value="">Select User</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>{user.name}</option>
+                ))}
+              </select>
             </div>
 
             <div>
