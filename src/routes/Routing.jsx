@@ -23,6 +23,7 @@ const Routing = () => {
       <Route path="/" element={authUser ? <Home /> : <Navigate to="/login" />} />
       <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/" />} />
       <Route path="/registration" element={<Registration />} />
+      <Route path="/home" element={authUser ? <Home /> : <Navigate to="/login" />}/>
 
       {/* Protected Routes */}
       <Route path="/upload" element={authUser ? <UploadForm /> : <Navigate to="/login" />} />

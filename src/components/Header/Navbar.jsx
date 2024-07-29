@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NavLink } from 'react-router-dom'; // Import NavLink instead of Link
 import { useAuthContext } from '../../context/AuthContext';
 import useLogout from '../../hooks/useLogout';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { authUser } = useAuthContext();
@@ -166,7 +167,7 @@ const Navbar = () => {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
-              <h3 className="text-white font-bold ">Clean Staff PRO</h3>
+             <Link to="/home"><h3 className="text-white font-bold ">Clean Staff PRO</h3></Link> 
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">

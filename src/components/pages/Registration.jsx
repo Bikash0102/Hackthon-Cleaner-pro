@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Registration = () => {
-  const [navigation, setNavigation] = useState(false);
+  const navigate = useNavigate(); // Initialize the navigate function
   const [inputs, setInputs] = useState({
     firstName: "",
     lastName: "",
@@ -87,7 +87,11 @@ const Registration = () => {
 
       if (response.ok) {
         toast.success("Successfully Registered");
-        setNavigation(true);
+        setTimeout(()=>
+        {
+          navigate('/login');
+        },"2000")
+         // Navigate to the login page after successful registration
       } else {
         console.error('Registration failed:', result);
         toast.error('Registration failed. Please try again.');

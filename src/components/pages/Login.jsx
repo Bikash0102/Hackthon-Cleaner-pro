@@ -60,7 +60,7 @@ const Login = () => {
       let expires = "expires=" + d.toUTCString();
       document.cookie = "jwt=" + data.token + ";" + expires + ";path=/";
 
-      if (response.status === 200) {
+      if (response) {
         toast.success("Successfully Logged In");
       }
     } catch (error) {

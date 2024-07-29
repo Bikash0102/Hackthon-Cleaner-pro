@@ -12,7 +12,6 @@ const TaskForm = ({ onSubmit }) => {
   const [assignedTo, setAssignedTo] = useState('');
   const [startDate, setStartDate] = useState('');
   const [dueHours, setDueHours] = useState('');
-  const [taskStatus, setTaskStatus] = useState('Pending');
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -50,7 +49,6 @@ const TaskForm = ({ onSubmit }) => {
       Assigned_TO: assignedTo,
       Start_Date: startDate,
       Due_Hours: dueHours,
-      Task_Status: taskStatus,
     };
 
     try {
@@ -86,7 +84,6 @@ const TaskForm = ({ onSubmit }) => {
     setAssignedTo('');
     setStartDate('');
     setDueHours('');
-    setTaskStatus('Pending');
   };
 
   return (
@@ -159,20 +156,17 @@ const TaskForm = ({ onSubmit }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
 
-            <div>
-              <label htmlFor="taskStatus" className="block text-gray-700 font-semibold mb-1">Task Status</label>
-              <select
-                id="taskStatus"
-                value={taskStatus}
-                onChange={(e) => setTaskStatus(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Pending">Pending</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
+          <div>
+            <label htmlFor="taskDescription" className="block text-gray-700 font-semibold mb-1">Task Description</label>
+            <textarea
+              id="taskDescription"
+              value={taskDescription}
+              onChange={(e) => setTaskDescription(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
 
           <div className="flex justify-end">
