@@ -79,6 +79,14 @@ const Navbar = () => {
               Task Status
             </NavLink>
           </li>
+          <li className="list-none">
+            <NavLink
+              to="/images"
+              className={linkStyle}
+            >
+              Task Images
+            </NavLink>
+          </li>
         </>
       );
     }

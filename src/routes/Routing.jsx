@@ -12,6 +12,7 @@ import Shorting from '../components/pages/Shorting';
 import TaskForm from '../components/pages/TaskForm';
 import UploadForm from '../components/pages/UploadForm';
 import TaskList from '../components/pages/TaskList';
+import ImageGallery from '../components/pages/ImageGallery';
 import { useAuthContext } from '../context/AuthContext';
 
 const Routing = () => {
@@ -24,9 +25,11 @@ const Routing = () => {
       <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/" />} />
       <Route path="/registration" element={<Registration />} />
       <Route path="/home" element={authUser ? <Home /> : <Navigate to="/login" />}/>
+      
 
       {/* Protected Routes */}
-      <Route path="/upload" element={authUser ? <UploadForm /> : <Navigate to="/login" />} />
+      <Route path="/upload" element={ <UploadForm /> } />
+      <Route path="/images" element={ <ImageGallery /> } />
       <Route path="/taskform" element={authUser ? <TaskForm /> : <Navigate to="/login" />} />
       <Route path="/tasks" element={authUser ? <Carts /> : <Navigate to="/login" />} />
       <Route path="/requirement" element={authUser ? <RequestResource /> : <Navigate to="/login" />} />

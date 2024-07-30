@@ -191,6 +191,29 @@ app.post('/rating_insert', (req, res) => {
 });
 })
 
+app.post('/task_image', (req, res) => {
+  const { imageUrl } = req.body;
+  console.log(imageUrl);
+
+  connection.query('INSERT INTO TaskImage (url) VALUES (?)', [imageUrl], (error, results) => {
+    if (error) {
+      console.error('Error executing query:', error);
+      return res.status(500).json({ message: 'Failed to insert the image URL' });
+    }
+    return res.status(200).json({ message: 'Successfully inserted the image URL to the task' });
+  });
+});
+
+app.get('/task_images', (req, res) => {
+  connection.query('SELECT url FROM TaskImage', (error, results) => {
+    if (error) {
+      console.error('Error executing query:', error);
+      return res.status(500).json({ message: 'Failed to retrieve image URLs' });
+    }
+    return res.status(200).json(results);
+  });
+});
+
 // app.get('/employee_fetch',  (req, res) => {
  
 //     connection.query('SELECT * FROM Employee where Role="Employee"',  (error, results) => {
