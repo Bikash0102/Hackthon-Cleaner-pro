@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Carts from '../components/pages/Carts';
 import EmployeeDetails from '../components/pages/EmployeeDetails';
@@ -12,11 +12,13 @@ import Shorting from '../components/pages/Shorting';
 import TaskForm from '../components/pages/TaskForm';
 import UploadForm from '../components/pages/UploadForm';
 import TaskList from '../components/pages/TaskList';
-import ImageGallery from '../components/pages/ImageGallery';
+import { lazy } from 'react';
 import { useAuthContext } from '../context/AuthContext';
 
 const Routing = () => {
   const { authUser } = useAuthContext();
+  //lazy feature in react
+  const Lazyimage=React.lazy(()=>import('../components/pages/ImageGallery'))
 
   return (
     <Routes>
@@ -29,7 +31,7 @@ const Routing = () => {
 
       {/* Protected Routes */}
       <Route path="/upload" element={ <UploadForm /> } />
-      <Route path="/images" element={ <ImageGallery /> } />
+      <Route path="/images" element={ <Suspense fallback="Loading ..."><Lazyimage/></Suspense>} />
       <Route path="/taskform" element={authUser ? <TaskForm /> : <Navigate to="/login" />} />
       <Route path="/tasks" element={authUser ? <Carts /> : <Navigate to="/login" />} />
       <Route path="/requirement" element={authUser ? <RequestResource /> : <Navigate to="/login" />} />

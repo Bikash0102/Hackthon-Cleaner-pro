@@ -9,7 +9,7 @@ const ImageGallery = () => {
   const fetchImageUrls = async () => {
     try {
       const response = await axios.get('http://localhost:5000/task_images');
-      console.log(response);
+
       setImageUrls(response.data);
     } catch (error) {
       console.error('Error fetching image URLs:', error);
